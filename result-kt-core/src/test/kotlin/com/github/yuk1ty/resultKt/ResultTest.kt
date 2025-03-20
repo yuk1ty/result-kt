@@ -2,6 +2,7 @@ package com.github.yuk1ty.resultKt
 
 import com.github.yuk1ty.resultKt.Result.Ok
 import com.github.yuk1ty.resultKt.Result.Err
+import io.kotest.assertions.throwables.shouldThrow
 import com.github.yuk1ty.resultKt.runCatching as ktRunCatching
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -39,7 +40,7 @@ class ResultTest : DescribeSpec({
 
         it("should throw UnwrapException if Result is Err") {
             val result: Result<Int, String> = Err("error")
-            runCatching { result.unwrap() }.isFailure shouldBe true
+            shouldThrow<UnwrapException> { result.unwrap() }
         }
     }
 
@@ -51,7 +52,7 @@ class ResultTest : DescribeSpec({
 
         it("should throw UnwrapException if Result is Ok") {
             val result: Result<Int, String> = Ok(42)
-            runCatching { result.unwrapErr() }.isFailure shouldBe true
+            shouldThrow<UnwrapException> { result.unwrapErr() }
         }
     }
 
@@ -87,8 +88,8 @@ class ResultTest : DescribeSpec({
 
         it("should throw error if Result is Err") {
             val result: Result<Int, Exception> = Err(Exception("error"))
-            // TODO: Fix test later
-            runCatching { result.unwrapOrThrow() }.isFailure shouldBe true
+            val error = shouldThrow<Exception> { result.unwrapOrThrow() }
+            error.message shouldBe "error"
         }
     }
 
@@ -100,8 +101,21 @@ class ResultTest : DescribeSpec({
 
         it("should throw UnwrapException if Result is Err") {
             val result: Result<Int, String> = Err("error")
-            // TODO: Fix test later
-            runCatching { result.expect("error") }.isFailure shouldBe true
+            val error = shouldThrow<UnwrapException> { result.expect("message") }
+            error.message shouldBe "message"
+        }
+    }
+
+    describe("expectErr()") {
+        it("should return error if Result is Err") {
+            val result = Err("error")
+            result.expectErr("message") shouldBe "error"
+        }
+
+        it("should throw UnwrapException if Result is Ok") {
+            val result: Result<Int, String> = Ok(42)
+            val error = shouldThrow<UnwrapException> { result.expectErr("message") }
+            error.message shouldBe "message"
         }
     }
 
@@ -114,6 +128,30 @@ class ResultTest : DescribeSpec({
         it("should return Err if Result is Err") {
             val result: Result<Int, String> = Err("error")
             result.map { it.toString() } shouldBe Err("error")
+        }
+    }
+
+    describe("mapOr()") {
+        it("should return mapped value if Result is Ok") {
+            val result = Ok(42)
+            result.mapOr({ it + 1 }, 0) shouldBe 43
+        }
+
+        it("should return default value if Result is Err") {
+            val result: Result<Int, String> = Err("error")
+            result.mapOr({ it.toString() }, "default") shouldBe "default"
+        }
+    }
+
+    describe("mapOrElse()") {
+        it("should return mapped value if Result is Ok") {
+            val result = Ok(42)
+            result.mapOrElse({ "error" }, { it + 1 }) shouldBe 43
+        }
+
+        it("should return value from lambda if Result is Err") {
+            val result: Result<Int, String> = Err("error")
+            result.mapOrElse({ it.replaceFirstChar { it.titlecase() } }, { 0 }) shouldBe "Error"
         }
     }
 

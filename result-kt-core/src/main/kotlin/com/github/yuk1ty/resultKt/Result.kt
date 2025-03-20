@@ -75,6 +75,11 @@ inline fun <T, U, E> Result<T, E>.mapOr(f: (T) -> U, default: U): U = when (this
     is Err -> default
 }
 
+inline fun <T, U, E> Result<T, E>.mapOrElse(default: (E) -> U, f: (T) -> U): U = when (this) {
+    is Ok -> f(value)
+    is Err -> default(error)
+}
+
 inline fun <T, E, F> Result<T, E>.mapErr(f: (E) -> F): Result<T, F> = when (this) {
     is Ok -> Ok(value)
     is Err -> Err(f(error))
