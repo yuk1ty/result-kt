@@ -100,11 +100,6 @@ inline fun <T, E> Result<T, E>.inspectErr(f: (E) -> Unit): Result<T, E> {
     return this
 }
 
-inline fun <T, U, E> Result<T, E>.fold(okFn: (T) -> U, errFn: (E) -> U): U = when (this) {
-    is Ok -> okFn(value)
-    is Err -> errFn(error)
-}
-
 fun <T, E> Result<T?, E>.transpose(): Result<T, E>? = when (this) {
     is Ok -> this.value?.let { Ok(it) }
     is Err -> Err(this.error)

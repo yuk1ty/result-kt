@@ -205,18 +205,6 @@ class ResultTest : DescribeSpec({
         }
     }
 
-    describe("fold()") {
-        it("should return mapped value if Result is Ok") {
-            val result = Ok(42)
-            result.fold({ it + 1 }, { "error" }) shouldBe 43
-        }
-
-        it("should return mapped error if Result is Err") {
-            val result: Result<Int, String> = Err("error")
-            result.fold({ it + 1 }, { it.replaceFirstChar { it.titlecase() } }) shouldBe "Error"
-        }
-    }
-
     describe("transpose()") {
         it("should return Ok if Result is Ok and value is not null") {
             val result = Ok(42)
