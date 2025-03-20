@@ -2,12 +2,21 @@ plugins {
     `maven-publish`
     kotlin("jvm")
 }
+
 dependencies {
-    implementation(kotlin("stdlib-jdk21"))
+    testImplementation(libs.kotest)
+    testImplementation(libs.kotestAssertions)
+    testImplementation(libs.kotestRunnerJunit5)
 }
+
 repositories {
     mavenCentral()
 }
+
+tasks.test {
+    useJUnitPlatform()
+}
+
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }

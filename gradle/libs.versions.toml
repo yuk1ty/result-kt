@@ -1,0 +1,8 @@
+[versions]
+kotlin = "2.1.10"
+kotest = "5.9.1"
+
+[libraries]
+kotest = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotestAssertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotestRunnerJunit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
