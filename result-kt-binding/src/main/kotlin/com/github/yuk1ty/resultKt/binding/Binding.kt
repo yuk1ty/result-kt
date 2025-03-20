@@ -9,35 +9,36 @@ import com.github.yuk1ty.resultKt.Result.Err
  * https://github.com/michaelbull/kotlin-result/blob/db27396a1f859f91f42f6121eff512e592b7cb4b/kotlin-result/src/commonMain/kotlin/com/github/michaelbull/result/Binding.kt
  */
 
-inline fun <V, E> binding(crossinline block: BindingScope<E>.() -> V): Result<V, E> {
-    return with(BindingScopeImpl<E>()) {
+inline fun <V, E> result(crossinline block: ResultScope<E>.() -> V): Result<V, E> {
+    return with(ResultScopeImpl<E>()) {
         try {
             Ok(block())
-        } catch (_: BindException) {
+        } catch (_: RaisingException) {
             result!!
         }
     }
 }
 
-internal object BindException : Exception() {
-    private fun readResolve(): Any = BindException
+internal object RaisingException : Exception() {
+    private fun readResolve(): Any = RaisingException
 }
 
-interface BindingScope<E> {
-    fun <V> Result<V, E>.bind(): V
+interface ResultScope<E> {
+    fun <V> Result<V, E>.`?`(): V = raise()
+    fun <V> Result<V, E>.raise(): V
 }
 
 @PublishedApi
-internal class BindingScopeImpl<E> : BindingScope<E> {
+internal class ResultScopeImpl<E> : ResultScope<E> {
 
     var result: Result<Nothing, E>? = null
 
-    override fun <V> Result<V, E>.bind(): V {
+    override fun <V> Result<V, E>.raise(): V {
         when (this) {
             is Ok -> return value
             is Err -> {
                 result = Err(error)
-                throw BindException
+                throw RaisingException
             }
         }
     }
