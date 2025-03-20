@@ -7,12 +7,14 @@ sealed interface Result<out T, out E> {
     fun isOk(): Boolean
     fun isErr(): Boolean
 
-    data class Ok<T>(val value: T) : Result<T, Nothing> {
+    @JvmInline
+    value class Ok<T>(val value: T) : Result<T, Nothing> {
         override fun isOk(): Boolean = true
         override fun isErr(): Boolean = false
     }
 
-    data class Err<E>(val error: E) : Result<Nothing, E> {
+    @JvmInline
+    value class Err<E>(val error: E) : Result<Nothing, E> {
         override fun isOk(): Boolean = false
         override fun isErr(): Boolean = true
     }
@@ -43,7 +45,7 @@ fun <T, E> Result<T, E>.unwrapOr(default: T): T = when (this) {
     is Err -> default
 }
 
-fun <T, E> Result<T, E>.unwrapOrElse(f: (E) -> T): T = when (this) {
+inline fun <T, E> Result<T, E>.unwrapOrElse(f: (E) -> T): T = when (this) {
     is Ok -> value
     is Err -> f(error)
 }
@@ -63,17 +65,17 @@ fun <T, E> Result<T, E>.expectErr(msg: String): E = when (this) {
     is Err -> error
 }
 
-fun <T, U, E> Result<T, E>.map(f: (T) -> U): Result<U, E> = when (this) {
+inline fun <T, U, E> Result<T, E>.map(f: (T) -> U): Result<U, E> = when (this) {
     is Ok -> Ok(f(value))
     is Err -> Err(error)
 }
 
-fun <T, U, E> Result<T, E>.mapOr(f: (T) -> U, default: U): U = when (this) {
+inline fun <T, U, E> Result<T, E>.mapOr(f: (T) -> U, default: U): U = when (this) {
     is Ok -> f(value)
     is Err -> default
 }
 
-fun <T, E, F> Result<T, E>.mapErr(f: (E) -> F): Result<T, F> = when (this) {
+inline fun <T, E, F> Result<T, E>.mapErr(f: (E) -> F): Result<T, F> = when (this) {
     is Ok -> Ok(value)
     is Err -> Err(f(error))
 }
@@ -83,17 +85,17 @@ fun <T, U, E> Result<T, E>.flatMap(f: (T) -> Result<U, E>): Result<U, E> = when 
     is Err -> Err(error)
 }
 
-fun <T, E> Result<T, E>.inspect(f: (T) -> Unit): Result<T, E> {
+inline fun <T, E> Result<T, E>.inspect(f: (T) -> Unit): Result<T, E> {
     if (this is Ok) f(value)
     return this
 }
 
-fun <T, E> Result<T, E>.inspectErr(f: (E) -> Unit): Result<T, E> {
+inline fun <T, E> Result<T, E>.inspectErr(f: (E) -> Unit): Result<T, E> {
     if (this is Err) f(error)
     return this
 }
 
-fun <T, U, E> Result<T, E>.fold(okFn: (T) -> U, errFn: (E) -> U): U = when (this) {
+inline fun <T, U, E> Result<T, E>.fold(okFn: (T) -> U, errFn: (E) -> U): U = when (this) {
     is Ok -> okFn(value)
     is Err -> errFn(error)
 }
@@ -108,7 +110,7 @@ fun <T, E> Result<Result<T, E>, E>.flatten(): Result<T, E> = when (this) {
     is Err -> Err(error)
 }
 
-fun <T> runCatching(block: () -> T): Result<T, Throwable> = try {
+inline fun <T> runCatching(block: () -> T): Result<T, Throwable> = try {
     Ok(block())
 } catch (e: Throwable) {
     Err(e)
@@ -126,7 +128,7 @@ fun <T, E> Result<T, E>.or(other: Result<T, E>): Result<T, E> = when (this) {
     is Err -> other
 }
 
-fun <T, E> Result<T, E>.orElse(f: (E) -> Result<T, E>): Result<T, E> = when (this) {
+inline fun <T, E> Result<T, E>.orElse(f: (E) -> Result<T, E>): Result<T, E> = when (this) {
     is Ok -> this
     is Err -> f(error)
 }

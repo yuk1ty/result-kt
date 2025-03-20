@@ -62,7 +62,7 @@ fun <A, B, C, D, E, F> zip(
     }
 }
 
-fun <A, B, C, E> zipOrAccumulate(
+inline fun <A, B, C, E> zipOrAccumulate(
     first: Producer<A, E>,
     second: Producer<B, E>,
     f: (A, B) -> C
@@ -82,7 +82,7 @@ fun <A, B, C, E> zipOrAccumulate(
     }
 }
 
-fun <A, B, C, D, E> zipOrAccumulate(
+inline fun <A, B, C, D, E> zipOrAccumulate(
     first: Producer<A, E>,
     second: Producer<B, E>,
     third: Producer<C, E>,
@@ -105,7 +105,7 @@ fun <A, B, C, D, E> zipOrAccumulate(
     }
 }
 
-fun <A, B, C, D, E, F> zipOrAccumulate(
+inline fun <A, B, C, D, E, F> zipOrAccumulate(
     first: Producer<A, E>,
     second: Producer<B, E>,
     third: Producer<C, E>,
@@ -131,7 +131,7 @@ fun <A, B, C, D, E, F> zipOrAccumulate(
     }
 }
 
-fun <A, B, C, D, E, F, G> zipOrAccumulate(
+inline fun <A, B, C, D, E, F, G> zipOrAccumulate(
     first: Producer<A, E>,
     second: Producer<B, E>,
     third: Producer<C, E>,
