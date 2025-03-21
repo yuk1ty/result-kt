@@ -23,6 +23,7 @@ internal object RaisingException : Exception() {
 }
 
 interface ResultScope<E> {
+    @Suppress("DANGEROUS_CHARACTERS")
     fun <V> Result<V, E>.`?`(): V = raise()
 
     fun <V> Result<V, E>.raise(): V
