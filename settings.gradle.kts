@@ -17,5 +17,5 @@ rootProject.name = "result-kt"
 include(
     "result-kt-binding",
     "result-kt-core",
-    "result-kt-util"
+    "result-kt-util",
 )

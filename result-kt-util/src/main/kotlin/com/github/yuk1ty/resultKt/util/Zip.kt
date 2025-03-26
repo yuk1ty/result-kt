@@ -1,47 +1,47 @@
 package com.github.yuk1ty.resultKt.util
 
-import com.github.yuk1ty.resultKt.*
-import com.github.yuk1ty.resultKt.Result.Ok
+import com.github.yuk1ty.resultKt.Result
 import com.github.yuk1ty.resultKt.Result.Err
+import com.github.yuk1ty.resultKt.Result.Ok
+import com.github.yuk1ty.resultKt.flatMap
+import com.github.yuk1ty.resultKt.map
+import com.github.yuk1ty.resultKt.unwrap
+import com.github.yuk1ty.resultKt.unwrapErr
 
 private typealias Producer<T, E> = () -> Result<T, E>
 
 fun <A, B, C> zip(
     first: Producer<A, Nothing>,
     second: Producer<B, Nothing>,
-    f: (A, B) -> C
-): Result<C, Nothing> {
-    return first().flatMap { second().map { second -> f(it, second) } }
-}
+    f: (A, B) -> C,
+): Result<C, Nothing> = first().flatMap { second().map { second -> f(it, second) } }
 
 fun <A, B, C, D> zip(
     first: Producer<A, Nothing>,
     second: Producer<B, Nothing>,
     third: Producer<C, Nothing>,
-    f: (A, B, C) -> D
-): Result<D, Nothing> {
-    return first().flatMap { one ->
+    f: (A, B, C) -> D,
+): Result<D, Nothing> =
+    first().flatMap { one ->
         second().flatMap { two ->
             third().map { three -> f(one, two, three) }
         }
     }
-}
 
 fun <A, B, C, D, E> zip(
     first: Producer<A, Nothing>,
     second: Producer<B, Nothing>,
     third: Producer<C, Nothing>,
     fourth: Producer<D, Nothing>,
-    f: (A, B, C, D) -> E
-): Result<E, Nothing> {
-    return first().flatMap { one ->
+    f: (A, B, C, D) -> E,
+): Result<E, Nothing> =
+    first().flatMap { one ->
         second().flatMap { two ->
             third().flatMap { three ->
                 fourth().map { four -> f(one, two, three, four) }
             }
         }
     }
-}
 
 fun <A, B, C, D, E, F> zip(
     first: Producer<A, Nothing>,
@@ -49,9 +49,9 @@ fun <A, B, C, D, E, F> zip(
     third: Producer<C, Nothing>,
     fourth: Producer<D, Nothing>,
     fifth: Producer<E, Nothing>,
-    f: (A, B, C, D, E) -> F
-): Result<F, Nothing> {
-    return first().flatMap { one ->
+    f: (A, B, C, D, E) -> F,
+): Result<F, Nothing> =
+    first().flatMap { one ->
         second().flatMap { two ->
             third().flatMap { three ->
                 fourth().flatMap { four ->
@@ -60,12 +60,11 @@ fun <A, B, C, D, E, F> zip(
             }
         }
     }
-}
 
 inline fun <A, B, C, E> zipOrAccumulate(
     first: Producer<A, E>,
     second: Producer<B, E>,
-    f: (A, B) -> C
+    f: (A, B) -> C,
 ): Result<C, List<E>> {
     val firstResult = first()
     val secondResult = second()
@@ -86,7 +85,7 @@ inline fun <A, B, C, D, E> zipOrAccumulate(
     first: Producer<A, E>,
     second: Producer<B, E>,
     third: Producer<C, E>,
-    f: (A, B, C) -> D
+    f: (A, B, C) -> D,
 ): Result<D, List<E>> {
     val firstResult = first()
     val secondResult = second()
@@ -110,7 +109,7 @@ inline fun <A, B, C, D, E, F> zipOrAccumulate(
     second: Producer<B, E>,
     third: Producer<C, E>,
     fourth: Producer<D, E>,
-    f: (A, B, C, D) -> F
+    f: (A, B, C, D) -> F,
 ): Result<F, List<E>> {
     val firstResult = first()
     val secondResult = second()
@@ -137,7 +136,7 @@ inline fun <A, B, C, D, E, F, G> zipOrAccumulate(
     third: Producer<C, E>,
     fourth: Producer<D, E>,
     fifth: Producer<F, E>,
-    f: (A, B, C, D, F) -> G
+    f: (A, B, C, D, F) -> G,
 ): Result<G, List<E>> {
     val firstResult = first()
     val secondResult = second()

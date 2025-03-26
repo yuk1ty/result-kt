@@ -25,3 +25,6 @@ jobs:
 
       - name: Test
         run: ./gradlew test
+
+      - name: Lint
+        run: ./gradlew spotlessCheck
