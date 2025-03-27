@@ -8,14 +8,46 @@ import com.github.yuk1ty.resultKt.map
 import com.github.yuk1ty.resultKt.unwrap
 import com.github.yuk1ty.resultKt.unwrapErr
 
+/**
+ * Type alias for a function that produces a [Result].
+ *
+ * @param T The type of the value in case of success
+ * @param E The type of the error in case of failure
+ */
 private typealias Producer<T, E> = () -> Result<T, E>
 
+/**
+ * Combines the results of two producers using a combining function.
+ * Returns [Ok] with the combined result if both producers succeed, or the first [Err] encountered.
+ *
+ * @param first The first producer
+ * @param second The second producer
+ * @param f The function to combine the results
+ * @param A The type of the first producer's value
+ * @param B The type of the second producer's value
+ * @param C The type of the combined result
+ * @return [Ok] with the combined result if both producers succeed, or the first [Err] encountered
+ */
 fun <A, B, C> zip(
     first: Producer<A, Nothing>,
     second: Producer<B, Nothing>,
     f: (A, B) -> C,
 ): Result<C, Nothing> = first().flatMap { second().map { second -> f(it, second) } }
 
+/**
+ * Combines the results of three producers using a combining function.
+ * Returns [Ok] with the combined result if all producers succeed, or the first [Err] encountered.
+ *
+ * @param first The first producer
+ * @param second The second producer
+ * @param third The third producer
+ * @param f The function to combine the results
+ * @param A The type of the first producer's value
+ * @param B The type of the second producer's value
+ * @param C The type of the third producer's value
+ * @param D The type of the combined result
+ * @return [Ok] with the combined result if all producers succeed, or the first [Err] encountered
+ */
 fun <A, B, C, D> zip(
     first: Producer<A, Nothing>,
     second: Producer<B, Nothing>,
@@ -28,6 +60,22 @@ fun <A, B, C, D> zip(
         }
     }
 
+/**
+ * Combines the results of four producers using a combining function.
+ * Returns [Ok] with the combined result if all producers succeed, or the first [Err] encountered.
+ *
+ * @param first The first producer
+ * @param second The second producer
+ * @param third The third producer
+ * @param fourth The fourth producer
+ * @param f The function to combine the results
+ * @param A The type of the first producer's value
+ * @param B The type of the second producer's value
+ * @param C The type of the third producer's value
+ * @param D The type of the fourth producer's value
+ * @param E The type of the combined result
+ * @return [Ok] with the combined result if all producers succeed, or the first [Err] encountered
+ */
 fun <A, B, C, D, E> zip(
     first: Producer<A, Nothing>,
     second: Producer<B, Nothing>,
@@ -43,6 +91,24 @@ fun <A, B, C, D, E> zip(
         }
     }
 
+/**
+ * Combines the results of five producers using a combining function.
+ * Returns [Ok] with the combined result if all producers succeed, or the first [Err] encountered.
+ *
+ * @param first The first producer
+ * @param second The second producer
+ * @param third The third producer
+ * @param fourth The fourth producer
+ * @param fifth The fifth producer
+ * @param f The function to combine the results
+ * @param A The type of the first producer's value
+ * @param B The type of the second producer's value
+ * @param C The type of the third producer's value
+ * @param D The type of the fourth producer's value
+ * @param E The type of the fifth producer's value
+ * @param F The type of the combined result
+ * @return [Ok] with the combined result if all producers succeed, or the first [Err] encountered
+ */
 fun <A, B, C, D, E, F> zip(
     first: Producer<A, Nothing>,
     second: Producer<B, Nothing>,
@@ -61,6 +127,19 @@ fun <A, B, C, D, E, F> zip(
         }
     }
 
+/**
+ * Combines the results of two producers using a combining function, accumulating errors if any.
+ * Returns [Ok] with the combined result if both producers succeed, or [Err] with a list of all errors.
+ *
+ * @param first The first producer
+ * @param second The second producer
+ * @param f The function to combine the results
+ * @param A The type of the first producer's value
+ * @param B The type of the second producer's value
+ * @param C The type of the combined result
+ * @param E The type of the error
+ * @return [Ok] with the combined result if both producers succeed, or [Err] with a list of all errors
+ */
 inline fun <A, B, C, E> zipOrAccumulate(
     first: Producer<A, E>,
     second: Producer<B, E>,
@@ -81,6 +160,21 @@ inline fun <A, B, C, E> zipOrAccumulate(
     }
 }
 
+/**
+ * Combines the results of three producers using a combining function, accumulating errors if any.
+ * Returns [Ok] with the combined result if all producers succeed, or [Err] with a list of all errors.
+ *
+ * @param first The first producer
+ * @param second The second producer
+ * @param third The third producer
+ * @param f The function to combine the results
+ * @param A The type of the first producer's value
+ * @param B The type of the second producer's value
+ * @param C The type of the third producer's value
+ * @param D The type of the combined result
+ * @param E The type of the error
+ * @return [Ok] with the combined result if all producers succeed, or [Err] with a list of all errors
+ */
 inline fun <A, B, C, D, E> zipOrAccumulate(
     first: Producer<A, E>,
     second: Producer<B, E>,
@@ -104,6 +198,23 @@ inline fun <A, B, C, D, E> zipOrAccumulate(
     }
 }
 
+/**
+ * Combines the results of four producers using a combining function, accumulating errors if any.
+ * Returns [Ok] with the combined result if all producers succeed, or [Err] with a list of all errors.
+ *
+ * @param first The first producer
+ * @param second The second producer
+ * @param third The third producer
+ * @param fourth The fourth producer
+ * @param f The function to combine the results
+ * @param A The type of the first producer's value
+ * @param B The type of the second producer's value
+ * @param C The type of the third producer's value
+ * @param D The type of the fourth producer's value
+ * @param E The type of the error
+ * @param F The type of the combined result
+ * @return [Ok] with the combined result if all producers succeed, or [Err] with a list of all errors
+ */
 inline fun <A, B, C, D, E, F> zipOrAccumulate(
     first: Producer<A, E>,
     second: Producer<B, E>,
@@ -130,6 +241,25 @@ inline fun <A, B, C, D, E, F> zipOrAccumulate(
     }
 }
 
+/**
+ * Combines the results of five producers using a combining function, accumulating errors if any.
+ * Returns [Ok] with the combined result if all producers succeed, or [Err] with a list of all errors.
+ *
+ * @param first The first producer
+ * @param second The second producer
+ * @param third The third producer
+ * @param fourth The fourth producer
+ * @param fifth The fifth producer
+ * @param f The function to combine the results
+ * @param A The type of the first producer's value
+ * @param B The type of the second producer's value
+ * @param C The type of the third producer's value
+ * @param D The type of the fourth producer's value
+ * @param F The type of the fifth producer's value
+ * @param G The type of the combined result
+ * @param E The type of the error
+ * @return [Ok] with the combined result if all producers succeed, or [Err] with a list of all errors
+ */
 inline fun <A, B, C, D, E, F, G> zipOrAccumulate(
     first: Producer<A, E>,
     second: Producer<B, E>,
