@@ -15,5 +15,9 @@ spotless {
             step = "ktlint"
             shortCode = "standard:function-naming"
         }
+        suppressLintsFor {
+            step = "ktlint"
+            shortCode = "standard:no-consecutive-comments"
+        }
     }
 }
