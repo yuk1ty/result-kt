@@ -6,13 +6,12 @@ import com.github.yuk1ty.resultKt.Result.Ok
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
-import com.github.yuk1ty.resultKt.runCatching as ktRunCatching
 
-class BindingTest :
+class RaisingTest :
     DescribeSpec({
         describe("try block and ? operator") {
             it("should return Ok(42) if the string '42' passed") {
-                fun parse(s: String): Result<Int, Throwable> = ktRunCatching { s.toInt() }
+                fun parse(s: String): Result<Int, Throwable> = Result.lift { s.toInt() }
 
                 fun lift(s: String): Result<String, Throwable> = Ok(s)
 
@@ -31,7 +30,7 @@ class BindingTest :
             }
 
             it("should return Err(NumberFormatException) if the string '42a' passed") {
-                fun parse(s: String): Result<Int, Throwable> = ktRunCatching { s.toInt() }
+                fun parse(s: String): Result<Int, Throwable> = Result.lift { s.toInt() }
 
                 fun lift(s: String): Result<String, Throwable> = Ok(s)
 
