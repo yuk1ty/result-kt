@@ -5,7 +5,6 @@ import com.github.yuk1ty.resultKt.Result.Ok
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import com.github.yuk1ty.resultKt.runCatching as ktRunCatching
 
 class ResultTest :
     DescribeSpec({
@@ -237,14 +236,14 @@ class ResultTest :
 
         describe("runCatching()") {
             it("should return Ok if block does not throw error") {
-                ktRunCatching { 42 } shouldBe Ok(42)
+                Result.lift { 42 } shouldBe Ok(42)
             }
 
             it("should return Err if block throws error") {
                 data class CustomException(
                     override val message: String,
                 ) : Exception(message)
-                ktRunCatching { throw CustomException("error") } shouldBe Err(CustomException("error"))
+                Result.lift { throw CustomException("error") } shouldBe Err(CustomException("error"))
             }
         }
 

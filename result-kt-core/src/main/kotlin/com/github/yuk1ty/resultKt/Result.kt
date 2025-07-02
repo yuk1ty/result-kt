@@ -10,6 +10,23 @@ import com.github.yuk1ty.resultKt.Result.Ok
  * @param E The type of the error in case of failure
  */
 sealed interface Result<out T, out E> {
+    companion object {
+        /**
+         * Runs the provided function and returns its result wrapped in [Ok] if it completes successfully,
+         * or the caught exception wrapped in [Err] if it throws.
+         *
+         * @param block The function to run
+         * @return [Ok] with the result if successful, [Err] with the exception if it throws
+         */
+        fun <T> lift(block: () -> T): Result<T, Throwable> {
+            return try {
+                Ok(block())
+            } catch (e: Throwable) {
+                Err(e)
+            }
+        }
+    }
+
     /**
      * Returns true if this [Result] is an [Ok] instance.
      *
@@ -285,20 +302,6 @@ fun <T, E> Result<Result<T, E>, E>.flatten(): Result<T, E> =
     when (this) {
         is Ok -> value
         is Err -> Err(error)
-    }
-
-/**
- * Runs the provided function and returns its result wrapped in [Ok] if it completes successfully,
- * or the caught exception wrapped in [Err] if it throws.
- *
- * @param block The function to run
- * @return [Ok] with the result if successful, [Err] with the exception if it throws
- */
-inline fun <T> runCatching(block: () -> T): Result<T, Throwable> =
-    try {
-        Ok(block())
-    } catch (e: Throwable) {
-        Err(e)
     }
 
 /**
