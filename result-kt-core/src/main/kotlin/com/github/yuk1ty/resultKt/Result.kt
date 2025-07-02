@@ -17,6 +17,7 @@ sealed interface Result<out T, out E> {
          *
          * @param block The function to run
          * @return [Ok] with the result if successful, [Err] with the exception if it throws
+         * @see [runCatching]
          */
         inline fun <T> lift(crossinline block: () -> T): Result<T, Throwable> =
             try {
@@ -362,3 +363,33 @@ typealias InfallibleResult<T> = Result<T, Nothing>
 data class UnwrapException(
     val msg: String,
 ) : RuntimeException(msg)
+
+/**
+ * Runs the provided function and returns its result wrapped in [Ok] if it completes successfully,
+ * or the caught exception wrapped in [Err] if it throws.
+ *
+ * @param block The function to run
+ * @return [Ok] with the result if successful, [Err] with the exception if it throws
+ * @see [Result.lift]
+ */
+inline fun <T> runCatching(crossinline block: () -> T): Result<T, Throwable> =
+    try {
+        Ok(block())
+    } catch (e: Throwable) {
+        Err(e)
+    }
+
+/**
+ * Runs the provided function and returns its result wrapped in [Ok] if it completes successfully,
+ * or the caught exception wrapped in [Err] if it throws.
+ *
+ * @param block The function to run
+ * @return [Ok] with the result if successful, [Err] with the exception if it throws
+ * @see [Result.lift]
+ */
+inline infix fun <T, U> T.runCatching(crossinline block: T.() -> U): Result<U, Throwable> =
+    try {
+        Ok(block())
+    } catch (e: Throwable) {
+        Err(e)
+    }
