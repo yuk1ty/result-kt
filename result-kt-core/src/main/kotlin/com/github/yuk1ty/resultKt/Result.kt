@@ -18,13 +18,12 @@ sealed interface Result<out T, out E> {
          * @param block The function to run
          * @return [Ok] with the result if successful, [Err] with the exception if it throws
          */
-        fun <T> lift(block: () -> T): Result<T, Throwable> {
-            return try {
+        inline fun <T> lift(crossinline block: () -> T): Result<T, Throwable> =
+            try {
                 Ok(block())
             } catch (e: Throwable) {
                 Err(e)
             }
-        }
     }
 
     /**
